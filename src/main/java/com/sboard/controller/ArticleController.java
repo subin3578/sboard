@@ -2,6 +2,7 @@ package com.sboard.controller;
 
 import com.sboard.config.AppInfo;
 import com.sboard.dto.ArticleDTO;
+import com.sboard.dto.FileDTO;
 import com.sboard.service.ArticleService;
 import com.sboard.service.FileService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -40,10 +43,17 @@ public class ArticleController {
         log.info(articleDTO);
 
         // 파일 업로드
-        fileService.uploadFile(articleDTO);
+        List<FileDTO> uploadedFiles = fileService.uploadFile(articleDTO);
 
         // 글 저장
-        articleService.insertArticle(articleDTO);
+        articleDTO.setFile(uploadedFiles.size()); // 첨부 파일 갯수 초기화
+        int ano = articleService.insertArticle(articleDTO);
+
+        // 파일 저장
+        for(FileDTO fileDTO : uploadedFiles){
+            fileDTO.setAno(ano);
+            fileService.insertFile(fileDTO);
+        }
 
         return "redirect:/article/list";
     }

@@ -1,0 +1,13 @@
+게시판(Board) 프로젝트 구성
+
+회원(user)
+ - 로그인		http://127.0.0.1:8080/user/login
+ - 약관		http://127.0.0.1:8080/user/terms
+ - 회원가입	http://127.0.0.1:8080/user/register
+ 
+게시판(article)
+ - 글목록  http://127.0.0.1:8080/article/list
+ - 글쓰기  http://127.0.0.1:8080/article/write
+ - 글보기  http://127.0.0.1:8080/article/view
+ - 글수정  http://127.0.0.1:8080/article/modify
+

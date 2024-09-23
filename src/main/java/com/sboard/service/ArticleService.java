@@ -19,23 +19,17 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final ModelMapper modelMapper;
 
-    public void insertArticle(ArticleDTO articleDTO) {
-
-        // 첨부 파일 객체(MultipartFile) 가져오기
-        List<MultipartFile> files = articleDTO.getFiles();
-        log.info("files size : " + files.size());
-
-        for(MultipartFile file : files) {
-            log.info("file name : " + file.getOriginalFilename());
-        }
-
+    public int insertArticle(ArticleDTO articleDTO) {
 
         // ModelMapper를 이용해서 DTO를 Entity로 변환
         Article article = modelMapper.map(articleDTO, Article.class);
         log.info(article);
 
         // 저장
-        articleRepository.save(article);
+        Article savedArticle = articleRepository.save(article);
+        
+        // 저장된 글번호 리턴
+        return savedArticle.getNo();
     }
 
     public ArticleDTO selectArticle(int no){
