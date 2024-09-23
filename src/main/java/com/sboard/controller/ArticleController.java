@@ -1,14 +1,22 @@
 package com.sboard.controller;
 
 import com.sboard.config.AppInfo;
+import com.sboard.dto.ArticleDTO;
+import com.sboard.service.ArticleService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
+@Log4j2
 @RequiredArgsConstructor
 @Controller
 public class ArticleController {
+
+    private final ArticleService articleService;
 
 
     @GetMapping("/article/list")
@@ -22,6 +30,20 @@ public class ArticleController {
 
         return "/article/write";
     }
+
+    @PostMapping("/article/write")
+    public String write(ArticleDTO articleDTO, HttpServletRequest req){
+        String regip = req.getRemoteAddr();
+        articleDTO.setRegip(regip);
+
+        log.info(articleDTO);
+
+
+        articleService.insertArticle(articleDTO);
+
+        return "redirect:/article/list";
+    }
+
 
     @GetMapping("/article/view")
     public String view(){
