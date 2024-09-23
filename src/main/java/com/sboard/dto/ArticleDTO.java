@@ -3,6 +3,8 @@ package com.sboard.dto;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Getter
 @Setter
 @ToString
@@ -20,8 +22,7 @@ public class ArticleDTO {
     private String content;
     private int comment;
 
-    //private MultipartFile file1;
-    //private MultipartFile file2;
+    private List<MultipartFile> files;
 
     @Builder.Default
     private int file = 0;

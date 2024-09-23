@@ -3,6 +3,7 @@ package com.sboard.controller;
 import com.sboard.config.AppInfo;
 import com.sboard.dto.ArticleDTO;
 import com.sboard.service.ArticleService;
+import com.sboard.service.FileService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final FileService fileService;
 
 
     @GetMapping("/article/list")
@@ -35,10 +37,12 @@ public class ArticleController {
     public String write(ArticleDTO articleDTO, HttpServletRequest req){
         String regip = req.getRemoteAddr();
         articleDTO.setRegip(regip);
-
         log.info(articleDTO);
 
+        // 파일 업로드
+        fileService.uploadFile(articleDTO);
 
+        // 글 저장
         articleService.insertArticle(articleDTO);
 
         return "redirect:/article/list";
