@@ -1,11 +1,15 @@
 package com.sboard.service;
 
+import com.querydsl.core.Tuple;
 import com.sboard.dto.ArticleDTO;
+import com.sboard.dto.PageRequestDTO;
 import com.sboard.entity.Article;
 import com.sboard.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,8 +40,27 @@ public class ArticleService {
         return null;
     }
 
-    public List<ArticleDTO> selectArticleAll(){
-        return null;
+    public List<ArticleDTO> selectArticleAll(PageRequestDTO pageRequestDTO) {
+
+        Pageable pageable = pageRequestDTO.getPageable("no");
+
+
+        // 엔티티 조회
+        //List<Article> articles = articleRepository.findAll();
+        Page<Tuple> pageArticle = articleRepository.selectArticleAllForList(pageRequestDTO, pageable);
+
+        // 엔티티 리스트를 DTO 리스트 변환
+        List<ArticleDTO> articleList = pageArticle.getContent().stream().map(tuple -> {
+
+                    Article article = tuple.get(0, Article.class);
+                    String nick = tuple.get(1, String.class);
+                    article.setNick(nick);
+
+                    return modelMapper.map(article, ArticleDTO.class);
+
+                }).toList();
+
+        return articleList;
     }
 
     public void updateArticle(ArticleDTO articleDTO) {
