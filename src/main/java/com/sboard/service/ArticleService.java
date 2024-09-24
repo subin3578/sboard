@@ -3,6 +3,7 @@ package com.sboard.service;
 import com.querydsl.core.Tuple;
 import com.sboard.dto.ArticleDTO;
 import com.sboard.dto.PageRequestDTO;
+import com.sboard.dto.PageResponseDTO;
 import com.sboard.entity.Article;
 import com.sboard.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,14 +41,19 @@ public class ArticleService {
         return null;
     }
 
-    public List<ArticleDTO> selectArticleAll(PageRequestDTO pageRequestDTO) {
+    public PageResponseDTO selectArticleAll(PageRequestDTO pageRequestDTO) {
 
         Pageable pageable = pageRequestDTO.getPageable("no");
 
+        Page<Tuple> pageArticle = null;
 
-        // 엔티티 조회
-        //List<Article> articles = articleRepository.findAll();
-        Page<Tuple> pageArticle = articleRepository.selectArticleAllForList(pageRequestDTO, pageable);
+        if(pageRequestDTO.getKeyword() == null) {
+            // 일반 글 목록
+            pageArticle = articleRepository.selectArticleAllForList(pageRequestDTO, pageable);
+        }else{
+            // 검색 글목록 조회
+            pageArticle = articleRepository.selectArticleForSearch(pageRequestDTO, pageable);
+        }
 
         // 엔티티 리스트를 DTO 리스트 변환
         List<ArticleDTO> articleList = pageArticle.getContent().stream().map(tuple -> {
@@ -60,7 +66,13 @@ public class ArticleService {
 
                 }).toList();
 
-        return articleList;
+        int total = (int) pageArticle.getTotalElements();
+
+        return PageResponseDTO.builder()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(articleList)
+                .total(total)
+                .build();
     }
 
     public void updateArticle(ArticleDTO articleDTO) {

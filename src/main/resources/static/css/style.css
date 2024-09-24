@@ -262,11 +262,14 @@ footer > p > .version {
     margin: 60px auto;    
 }
 
+
 #board > .list > nav > form {
     float: right;
 }
-
-#board > .list > nav > form > input[name=search]{
+#board > .list > nav > form > select {
+    height : 26px;
+}
+#board > .list > nav > form > input[name=keyword]{
     width: 200px;
     height: 26px;
     text-indent: 6px;
@@ -327,7 +330,11 @@ footer > p > .version {
     background: #888;
     color: #fff;
 }
+.current {
+    color: darkgray; /* 선택된 페이지의 글자 색을 빨간색으로 변경 */
+    font-weight: bold; /* 강조 */
 
+}
 /* 글쓰기 */
 #board > .write {
     width: 100%;

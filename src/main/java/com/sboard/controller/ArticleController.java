@@ -4,6 +4,7 @@ import com.sboard.config.AppInfo;
 import com.sboard.dto.ArticleDTO;
 import com.sboard.dto.FileDTO;
 import com.sboard.dto.PageRequestDTO;
+import com.sboard.dto.PageResponseDTO;
 import com.sboard.service.ArticleService;
 import com.sboard.service.FileService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,12 +29,15 @@ public class ArticleController {
     @GetMapping("/article/list")
     public String list(Model model, PageRequestDTO pageRequestDTO) {
 
-        List<ArticleDTO> articles = articleService.selectArticleAll(pageRequestDTO);
-        model.addAttribute("articles", articles);
+    // 일반 글
+            PageResponseDTO pageResponseDTO = articleService.selectArticleAll(pageRequestDTO);
+            model.addAttribute(pageResponseDTO);
+
+
+
 
         return "/article/list";
     }
-
     @GetMapping("/article/write")
     public String write(){
 
